@@ -1,0 +1,28 @@
+body {
+    background: #4B33A8
+}
+  
+.card-img-left {
+    width: 45%;
+    /* Link to your background image using in the property below! */
+    background: scroll center
+      url("https://plus.unsplash.com/premium_photo-1673288397476-f1e9c3e15a1d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0M3x8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60");
+    background-size: cover;
+}
+  
+.btn-login {
+    font-size: 0.9rem;
+    letter-spacing: 0.05rem;
+    padding: 0.75rem 1rem;
+    border-radius: 20px;
+}
+  
+.btn-google {
+    color: white !important;
+    background-color: #ea4335;
+}
+  
+.btn-facebook {
+    color: white !important;
+    background-color: #3b5998;
+}

@@ -1,0 +1,162 @@
+[
+    {
+        "id": "Audifonos-01",
+        "titulo": "Audifonos M10 Pro",
+        "imagen": "./img/Audifonos/01.jpg",
+        "categoria": {
+            "nombre": "Audifonos Bluetooth",
+            "id": "Audifonos"
+        },
+        "precio": 15
+    },
+    {
+        "id": "Audifonos-02",
+        "titulo": "Audifonos I12",
+        "imagen": "./img/Audifonos/02.jpg",
+        "categoria": {
+            "nombre": "Audifonos I12",
+            "id": "Audifonos"
+        },
+        "precio": 11
+    },
+    {
+        "id": "Audifonos-03",
+        "titulo": "Audifonos M90 Pro",
+        "imagen": "./img/Audifonos/03.jpg",
+        "categoria": {
+            "nombre": "Audifonos M90 Pro",
+            "id": "Audifonos"
+        },
+        "precio": 20
+    },
+    {
+        "id": "Audifonos-05",
+        "titulo": "Audifonos TWS-4",
+        "imagen": "./img/Audifonos/05.jpg",
+        "categoria": {
+            "nombre": "Audifonos TWS-4",
+            "id": "Audifonos"
+        },
+        "precio": 17
+    },
+    {
+        "id": "Audifonos-06",
+        "titulo": "Audifonos PowerBank",
+        "imagen": "./img/Audifonos/06.jpg",
+        "categoria": {
+            "nombre": "Audifonos PowerBank",
+            "id": "Audifonos"
+        },
+        "precio": 46
+    },
+    {
+        "id": "Audifonos-07",
+        "titulo": "Audifonos Gaming MD168",
+        "imagen": "./img/Audifonos/07.jpg",
+        "categoria": {
+            "nombre": "Audifonos Gaming",
+            "id": "Audifonos"
+        },
+        "precio": 31
+    },
+    {
+        "id": "Audifonos-08",
+        "titulo": "Audífonos Gamer E10",
+        "imagen": "./img/Audifonos/08.jpg",
+        "categoria": {
+            "nombre": "Audífonos Gamer E10",
+            "id": "Audífonos"
+        },
+        "precio": 20
+    },
+    {
+        "id": "Relojes-01",
+        "titulo": "Reloj Smart Watch",
+        "imagen": "./img/Relojes/01.jpg",
+        "categoria": {
+            "nombre": "Relojes",
+            "id": "Relojes"
+        },
+        "precio": 13
+    },
+    {
+        "id": "Relojes-02",
+        "titulo": "Reloj Smart Watch T500",
+        "imagen": "./img/Relojes/02.jpg",
+        "categoria": {
+            "nombre": "Relojes",
+            "id": "Relojes"
+        },
+        "precio": 15
+    },
+    {
+        "id": "Relojes-03",
+        "titulo": "Reloj Smart Watch D20L",
+        "imagen": "./img/Relojes/03.jpg",
+        "categoria": {
+            "nombre": "Relojes",
+            "id": "Relojes"
+        },
+        "precio": 12
+    },
+    {
+        "id": "Relojes-04",
+        "titulo": "Reloj Smart Deportivo",
+        "imagen": "./img/Relojes/04.jpg",
+        "categoria": {
+            "nombre": "Relojes",
+            "id": "Relojes"
+        },
+        "precio": 18
+    },
+    {
+        "id": "Cargadores-01",
+        "titulo": "Cargador Samsung S10",
+        "imagen": "./img/Cargadores/01.jpg",
+        "categoria": {
+            "nombre": "Cargadores",
+            "id": "Cargadores"
+        },
+        "precio": 8
+    },
+    {
+        "id": "Cargadores-02",
+        "titulo": "Cargador Iphone 12 Pro",
+        "imagen": "./img/Cargadores/02.jpg",
+        "categoria": {
+            "nombre": "Cargadores",
+            "id": "Cargadores"
+        },
+        "precio": 8
+    },
+    {
+        "id": "Cargadores-03",
+        "titulo": "Cargador Iphone",
+        "imagen": "./img/Cargadores/03.jpg",
+        "categoria": {
+            "nombre": "Cargadores",
+            "id": "Cargadores"
+        },
+        "precio": 7.50
+    },
+    {
+        "id": "Cargadores-04",
+        "titulo": "Cargador Ezra Smart",
+        "imagen": "./img/Cargadores/04.jpg",
+        "categoria": {
+            "nombre": "Cargadores",
+            "id": "Cargadores"
+        },
+        "precio": 7
+    },
+    {
+        "id": "pantalon-05",
+        "titulo": "Pantalón 05",
+        "imagen": "./img/pantalones/05.jpg",
+        "categoria": {
+            "nombre": "Pantalones",
+            "id": "pantalones"
+        },
+        "precio": 1000
+    }
+]
