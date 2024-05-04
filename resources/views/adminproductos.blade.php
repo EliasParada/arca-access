@@ -69,7 +69,12 @@
                         </div>
                         <div class="form-group">
                             <label for="txtCategoria">Cayegoría:</label>
-                            <input required type="text" class="form-control" name="categoria" id="txtCategoria" placeholder="categoria">
+                            <select name="categoria" id="txtCategoria" class="form-control">
+                                <option value="Relojes">Relojes</option>
+                                <option value="Cargadores">Cargadores</option>
+                                <option value="Protectores">Protectores</option>
+                                <option value="Audifonos">Audifonos</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="txtproveedor">Nombre del proveedor:</label>

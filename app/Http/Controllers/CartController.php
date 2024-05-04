@@ -91,9 +91,11 @@ class CartController extends Controller
 
         $indiceProducto = array_search($producto_id, array_column($carrito, 'producto_id'));
 
-        if ($indiceProducto !== false) {
+        if ($indiceProducto !== false && $indiceProducto > 0) {
             unset($carrito[$indiceProducto]);
             session()->put('carrito', $carrito);
+        } else {
+            session()->forget('carrito');
         }
 
         return redirect()->back()->with('delete', 'Producto eliminado del carrito');
@@ -107,4 +109,39 @@ class CartController extends Controller
         session()->forget('carrito');
         return redirect()->back()->with('success', 'El carrito se ha vaciado correctamente');
     }
+
+    public function incrementarCantidad($producto_id)
+    {
+        $carrito = session()->get('carrito', []);
+
+        foreach ($carrito as $key => $item) {
+            if ($item['producto_id'] == $producto_id) {
+                $carrito[$key]['cantidad'] += 1;
+                session()->put('carrito', $carrito);
+                return response()->json(['cantidad' => $carrito[$key]['cantidad']]);
+            }
+        }
+
+        return response()->json(['error' => 'Producto no encontrado'], 404);
+    }
+
+    public function decrementarCantidad($producto_id)
+    {
+        $carrito = session()->get('carrito', []);
+
+        foreach ($carrito as $key => $item) {
+            if ($item['producto_id'] == $producto_id) {
+                if ($carrito[$key]['cantidad'] > 1) {
+                    $carrito[$key]['cantidad'] -= 1;
+                    session()->put('carrito', $carrito);
+                    return response()->json(['cantidad' => $carrito[$key]['cantidad']]);
+                } else {
+                    return response()->json(['error' => 'La cantidad no puede ser menor que 1'], 400);
+                }
+            }
+        }
+
+        return response()->json(['error' => 'Producto no encontrado'], 404);
+    }
+
 }

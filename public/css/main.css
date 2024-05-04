@@ -109,7 +109,8 @@ aside {
 }
 
 .boton-carrito {
-    margin-top: 2rem;
+    margin-top: 1rem;
+    padding-bottom: 0;
 }
 
 .numerito {
@@ -461,13 +462,32 @@ header .logoo{
     position: relative;
 }
 .icono-perfil .profile-icon {
-    position: absolute; /* Posiciona el icono de perfil de manera absoluta */
-    top: -50px; /* Ajusta la distancia desde la parte superior */
-    left: 20vh; /* Ajusta la distancia desde la izquierda */
     width: 67px; /* Ajusta el ancho del icono según tus necesidades */
     height: auto; /* Permite que la altura se ajuste automáticamente según el ancho */
     border-radius: 50%; /* Hace que la imagen tenga forma de círculo (opcional) */
     border: 2px solid #000; /* Agrega un borde blanco alrededor del icono (opcional) */
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Agrega una sombra al icono (opcional) */
     cursor: pointer;
+}
+
+.cantidad-container {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-cantidad {
+    border: 0;
+    background-color: var(--clr-main);
+    padding: .5rem;
+    color: var(--clr-white);
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: .5rem;
+}
+
+.btn-cantidad:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

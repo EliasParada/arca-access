@@ -9,6 +9,14 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/main.css">
+    <style>
+        .modal-backdrop {
+            display: none !important;
+        }
+        .modal-footer {
+            justify-content: flex-start;
+        }
+    </style>
 </head>
 <body>
 
@@ -23,20 +31,22 @@
             <button class="close-menu" id="close-menu">
                 <i class="bi bi-x"></i>
             </button>
-            <header>
-                <img src="/img/logo.jpeg" alt="" style="border-radius: 100%;" class="logoo">
-            </header>
-            <div class="icono-perfil">
-                <a href="login">
-                    <img src="/img/icono2.jpeg" alt="Icono de perfil" class="profile-icon">
-                </a>
+            <div style="display: flex; justify-content: space-between; box-sizing: border-box; padding: 1rem;">
+                <img src="/img/logo.jpeg" alt="" style="border-radius: 100%; width: 4rem; height: 4rem;" class="logoo">
+
+                <div class="icono-perfil">
+                    @if (Auth::check())
+                        <img src="{{ asset('image/' . Auth::user()->foto. '') }}" alt="Icono de perfil" class="profile-icon" data-bs-toggle="modal" id="modal.btn" data-bs-target="#Modalusuario">
+                    @else
+                        <a href="login">
+                            <img src="/img/icono2.jpeg" alt="Icono de perfil" class="profile-icon">
+                        </a>
+                    @endif
+                </div>
             </div>
+            
             <!--INCIO DE VENTANA USUARIO-->
             
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Modalusuario">
-                    ventana de usuario
-                </button>
             
             <!--FIN DE VENTANA USUARIO-->
             <nav>
@@ -59,12 +69,20 @@
                     
                     <li>
                         <a class="boton-menu boton-carrito" href="{{ route('carrito') }}">
-                            <i class="bi bi-cart-fill"></i> Carrito <span id="numerito" class="numerito">{{ count($carrito) }}</span>
+                            <i class="bi bi-cart-fill"></i> Carrito <span id="numerito" class="numerito">
+                                @php
+                                    $totalProductos = 0;
+                                    foreach ($carrito as $producto) {
+                                        $totalProductos += $producto['cantidad'];
+                                    }
+                                    echo $totalProductos;
+                                @endphp
+                            </span>
                         </a>
                     </li>
                     @if (Auth::check() && Auth::user()->admin == 1)
                     <li>
-                    <a class="boton-menu boton-carrito" href="{{ route('productos') }}">
+                    <a class="boton-menu boton-carrito" href="{{ route('productos') }}" style="margin: 0; padding-top: 0;">
                             <i class="bi bi-hand-index-thumb"></i> Administrador
                         </a>
                     </li>
@@ -84,7 +102,7 @@
             <h2 class="titulo-principal" id="titulo-principal">Todos los productos</h2>
             <div id="contenedor-productos" class="contenedor-productos">
                 <?php foreach($products as $product): ?>
-                    <div class="producto">
+                    <div class="producto producto-card" data-categoria="<?= $product->categoria ?>">
                         <img class="producto-imagen" src="{{ asset('image/' .$product->imagen. '') }}" alt="<?= $product->nombre ?>">
                         <div class="producto-detalles">
                             <h3 class="producto-titulo"><?= $product->nombre ?></h3>
@@ -148,7 +166,7 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="Modalusuario" tabindex="-1" aria-labelledby="ModalLabelusuario" aria-hidden="true" style="z-index: 1000;">
+    <div class="modal fade" id="Modalusuario" aria-labelledby="ModalLabelusuario" aria-hidden="true" style="z-index: 1000;">
         <div class="modal-dialog">
             <div style="background-color: rgba(0, 0, 0, 0.6); color: #ffffff;" class="modal-content">
                 <div class="modal-header" style="justify-content: flex-start;">
@@ -170,13 +188,7 @@
                 <div class="modal-footer">
                     <!-- Button Mis marcadores -->
                     <button style="color: #fff; background: transparent; border:none; margin-right: 299px;" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        <h5 style="font-weight: 300;"> Hs pedidos</h5>
-                    </button>
-                </div>
-                <div class="modal-footer">
-                    <!-- Button Mis marcadores -->
-                    <button style="color: #fff; background: transparent; border:none; margin-right: 299px;" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        <h5 style="font-weight: 300;"> Métodos de pago</h5>
+                        <h5 style="font-weight: 300;">Historial de pedidos</h5>
                     </button>
                 </div>
                 

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="./css/main.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
 
@@ -46,10 +47,11 @@
         <main>
             <h2 class="titulo-principal">Carrito</h2>
             <div class="contenedor-carrito">
+            @csrf
                 @if (count($carrito) > 0)
                     <div id="carrito-productos" class="carrito-productos">
                         @foreach ($carrito as $producto)
-                            <div class="carrito-producto">
+                            <div class="carrito-producto" data-product-id="{{ $producto['producto_id'] }}">
                                 <img class="carrito-producto-imagen" src="{{ asset('image/' .$producto['imagenes']. '') }}" alt="{{ $producto['nombre'] }}">
                                 <div class="carrito-producto-titulo">
                                     <small>Título</small>
@@ -57,7 +59,11 @@
                                 </div>
                                 <div class="carrito-producto-cantidad">
                                     <small>Cantidad</small>
-                                    <p>{{ $producto['cantidad'] }}</p>
+                                    <div class="cantidad-container">
+                                        <button class="btn-cantidad btn-decremento" onclick="decrementarCantidad('{{ $producto['producto_id'] }}', '{{ $producto['precio_unidad'] }}')">-</button>
+                                        <p class="cantidad">{{ $producto['cantidad'] }}</p>
+                                        <button class="btn-cantidad btn-incremento" onclick="incrementarCantidad('{{ $producto['producto_id'] }}', '{{ $producto['precio_unidad'] }}')">+</button>
+                                    </div>
                                 </div>
                                 <div class="carrito-producto-precio">
                                     <small>Precio</small>
@@ -67,9 +73,9 @@
                                     <small>Subtotal</small>
                                     <p>${{ $producto['precio_unidad'] * $producto['cantidad'] }}</p>
                                 </div>
-                                <form action="{{ route('carrito.eliminar', $producto['producto_id']) }}" method="POST">
+                                <form action="{{ route('carrito.eliminar', $producto['producto_id']) }}" id="eliminar-producto-{{ $producto['producto_id'] }}" method="POST">
                                     @csrf
-                                    <button class="carrito-producto-eliminar" id=""><i class="bi bi-trash-fill"></i></button>
+                                    <button class="carrito-producto-eliminar" id=""  onclick="confirmDelete('{{ $producto['producto_id'] }}')" type="button"><i class="bi bi-trash-fill"></i></button>
                                 </form>
                             </div>
                         @endforeach
@@ -80,15 +86,28 @@
 
                 <div id="carrito-acciones" class="carrito-acciones">
                     <div class="carrito-acciones-izquierda">
-                        <form action="{{ route('carrito.vaciar') }}" method="POST">
+                        <form action="{{ route('carrito.vaciar') }}" method="POST" id="vaciar">
                             @csrf
-                            <button type="submit" id="carrito-acciones-vaciar" class="carrito-acciones-vaciar">Vaciar carrito</button>
+                            <button id="carrito-acciones-vaciar" class="carrito-acciones-vaciar"  onclick="vaciarCarrito()" type="button">Vaciar carrito</button>
                         </form>
                     </div>
                     <div class="carrito-acciones-derecha">
                         <div class="carrito-acciones-total">
                             <p>Total:</p>
-                            <p id="total">$3000</p>
+                            @php
+                                $total = 0;
+                                $carrito = session('carrito', []);
+                                @endphp
+
+                                @if (count($carrito) > 0)
+                                    @foreach ($carrito as $producto)
+                                        @php
+                                            $subtotal = $producto['precio_unidad'] * $producto['cantidad'];
+                                            $total += $subtotal;
+                                        @endphp
+                                    @endforeach
+                                @endif
+                            <p id="total">${{ $total }}</p>
                         </div>
                         <button id="carrito-acciones-comprar" class="carrito-acciones-comprar">Comprar ahora</button>
                     </div>
@@ -105,22 +124,125 @@
     <!-- <script src="./js/carrito.js"></script> -->
     <script src="./js/menu.js"></script>
     <script>
+        function getTotalPrecio() {
+            let total = 0;
+            document.querySelectorAll('.carrito-producto').forEach((producto) => {
+                let precio = parseFloat(producto.querySelector('.carrito-producto-subtotal p').textContent.replace('$', ''));
+                total += precio;
+            });
+            return total.toFixed(2);
+        }
+
+        let updatingCart = false;
+
+        function incrementarCantidad(productId, precio) {
+            if (updatingCart) return;
+
+            document.querySelectorAll('.btn-cantidad').forEach((btn) => {
+                btn.disabled = true;
+            });
+            updatingCart = true;
+            fetch(`/carrito/${productId}/incrementar`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Hubo un problema al incrementar la cantidad.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                let cantidadElement = document.querySelector(`.carrito-productos [data-product-id="${productId}"] .cantidad`);
+                let subTotal = document.querySelector(`.carrito-productos [data-product-id="${productId}"] > .carrito-producto-subtotal > p`);
+                cantidadElement.textContent = data.cantidad;
+                subTotal.textContent = precio * data.cantidad;
+                document.querySelector('#total').textContent = '$' + getTotalPrecio();
+                document.querySelectorAll('.btn-cantidad').forEach((btn) => {
+                    btn.disabled = false;
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                updatingCart = false;
+            });
+        }
+
+        function decrementarCantidad(productId, precio) {
+            if (updatingCart) return;
+
+            document.querySelectorAll('.btn-cantidad').forEach((btn) => {
+                btn.disabled = true;
+            });
+
+            updatingCart = true;
+            fetch(`/carrito/${productId}/decrementar`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Hubo un problema al decrementar la cantidad.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                let cantidadElement = document.querySelector(`.carrito-productos [data-product-id="${productId}"] .cantidad`);
+                let subTotal = document.querySelector(`.carrito-productos [data-product-id="${productId}"] > .carrito-producto-subtotal > p`);
+                cantidadElement.textContent = data.cantidad;
+                subTotal.textContents = precio * data.cantidad;
+                document.querySelectorAll('.btn-cantidad').forEach((btn) => {
+                    btn.disabled = false;
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                updatingCart = false;
+            });
+        }
+
+        function vaciarCarrito() {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'Esta acción no se puede deshacer.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('vaciar').submit();
+                }
+            });
+        }
+
         function confirmDelete(productId) {
             Swal.fire({
                 title: '¿Estás seguro?',
-                icon: 'question',
-                html: `Se van a borrar ${productosEnCarrito.reduce((acc, producto) => acc + producto.cantidad, 0)} productos.`,
+                text: 'Esta acción no se puede deshacer.',
+                icon: 'warning',
                 showCancelButton: true,
-                focusConfirm: false,
-                confirmButtonText: 'Sí',
-                cancelButtonText: 'No'
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    productosEnCarrito.length = 0;
-                    localStorage.setItem("productos-en-carrito", JSON.stringify(productosEnCarrito));
-                    cargarProductosCarrito();
+                    document.getElementById(`eliminar-producto-${productId}`).submit();
                 }
-            })
+            });
         }
     </script>
 
@@ -130,9 +252,9 @@
                 text: "Producto eliminado",
                 duration: 3000,
                 close: true,
-                gravity: "top", // `top` or `bottom`
-                position: "right", // `left`, `center` or `right`
-                stopOnFocus: true, // Prevents dismissing of toast on hover
+                gravity: "top",
+                position: "right",
+                stopOnFocus: true,
                 style: {
                 background: "linear-gradient(to right, #4b33a8, #785ce9)",
                 borderRadius: "2rem",
@@ -140,10 +262,10 @@
                 fontSize: ".75rem"
                 },
                 offset: {
-                    x: '1.5rem', // horizontal axis - can be a number or a string indicating unity. eg: '2em'
-                    y: '1.5rem' // vertical axis - can be a number or a string indicating unity. eg: '2em'
+                    x: '1.5rem',
+                    y: '1.5rem'
                 },
-                onClick: function(){} // Callback after click
+                onClick: function(){}
             }).showToast();
         </script>
     @endif

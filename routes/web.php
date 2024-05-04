@@ -30,3 +30,6 @@ Route::get('carrito', [App\Http\Controllers\CartController::class, 'index'])->na
 Route::post('carrito', [App\Http\Controllers\CartController::class, 'store'])->name('carrito.store');
 Route::post('carrito/vaciar', [App\Http\Controllers\CartController::class, 'destroy'])->name('carrito.vaciar');
 Route::post('carrito/{producto_id}', [App\Http\Controllers\CartController::class, 'update'])->name('carrito.eliminar');
+Route::post('carrito/{producto_id}/incrementar', [App\Http\Controllers\CartController::class, 'incrementarCantidad'])->name('carrito.incrementar');
+Route::post('carrito/{producto_id}/decrementar', [App\Http\Controllers\CartController::class, 'decrementarCantidad'])->name('carrito.decrementar');
+
