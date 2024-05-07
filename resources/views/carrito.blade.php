@@ -109,7 +109,10 @@
                                 @endif
                             <p id="total">${{ $total }}</p>
                         </div>
-                        <button id="carrito-acciones-comprar" class="carrito-acciones-comprar">Comprar ahora</button>
+                        <form action="{{ route('cobrar') }}" method="post">
+                            @csrf
+                            <button class="carrito-acciones-comprar">Comprar ahora</button>
+                        </form>
                     </div>
                 </div>
 
@@ -198,7 +201,8 @@
                 let cantidadElement = document.querySelector(`.carrito-productos [data-product-id="${productId}"] .cantidad`);
                 let subTotal = document.querySelector(`.carrito-productos [data-product-id="${productId}"] > .carrito-producto-subtotal > p`);
                 cantidadElement.textContent = data.cantidad;
-                subTotal.textContents = precio * data.cantidad;
+                subTotal.textContent = precio * data.cantidad;
+                document.querySelector('#total').textContent = '$' + getTotalPrecio();
                 document.querySelectorAll('.btn-cantidad').forEach((btn) => {
                     btn.disabled = false;
                 });
