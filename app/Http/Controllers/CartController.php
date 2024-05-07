@@ -4,13 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Products;
+use App\Lib\Services\Pagadito;
 use Illuminate\Http\Request;
 
-class CartController extends Controller
+require_once(__DIR__. '../../../services/config.php');
+require_once(__DIR__. '../../../services/lib/Pagadito.php');
+
+class CartController extends Pagadito
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $pagadito;
+
+    public function __construct()
+    {
+        $this->pagadito = new Pagadito(UID, WSK);
+        
+        if (SANDBOX) {
+            $this->pagadito->mode_sandbox_on();
+        }
+    }
+
     public function index()
     {
         $carrito = session()->get('carrito', []);
@@ -18,17 +30,11 @@ class CartController extends Controller
         return view('carrito', ['carrito' => $carrito]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $producto_id = $request->input('id');
@@ -66,25 +72,16 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Producto agregado al carrito');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Products $productos)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Products $productos)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Products $productos, $producto_id)
     {
         $carrito = session()->get('carrito', []);
@@ -101,13 +98,33 @@ class CartController extends Controller
         return redirect()->back()->with('delete', 'Producto eliminado del carrito');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Products     $productos)
+    public function destroy(Products $productos)
     {
         session()->forget('carrito');
         return redirect()->back()->with('success', 'El carrito se ha vaciado correctamente');
+    }
+
+    public function cobrar()
+    {
+        $carrito = session()->get('carrito', []);
+
+        session()->put('carrito_old', $carrito);
+
+        $fechaHora = date('YmdHis');
+        $numeroAleatorio = rand(100, 999);
+        $ern = "ARCA_ACCESS-$fechaHora-$numeroAleatorio";
+
+        if($this->pagadito->connect()) {
+            foreach ($carrito as $item) {
+                $this->pagadito->add_detail($item['cantidad'], $item['nombre'], $item['precio_unidad']);
+            }
+
+            if (!$this->pagadito->exec_trans($ern)) {
+                return "ERROR:" . $this->pagadito->get_rs_code() . ": " . $this->pagadito->get_rs_message();
+            }
+        } else {
+            return "ERROR:" . $this->pagadito->get_rs_code() . ": " . $this->pagadito->get_rs_message();
+        }
     }
 
     public function incrementarCantidad($producto_id)
