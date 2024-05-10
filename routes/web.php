@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [App\Http\Controllers\homeController::class, 'index'])->name('home');
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('login', [App\Http\Controllers\LoginController::class, 'index'])->name('login');
 Route::get('register', [App\Http\Controllers\RegisterController::class, 'index'])->name('register');
