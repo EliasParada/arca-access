@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\Factura;
+use App\Models\DetalleFactura;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Products;
 use App\Lib\Services\Pagadito;
 use Illuminate\Http\Request;
@@ -106,24 +109,78 @@ class CartController extends Pagadito
 
     public function cobrar()
     {
-        $carrito = session()->get('carrito', []);
+        if (Auth::check()) {
+            $carrito = session()->get('carrito', []);
 
-        session()->put('carrito_old', $carrito);
-
-        $fechaHora = date('YmdHis');
-        $numeroAleatorio = rand(100, 999);
-        $ern = "ARCA_ACCESS-$fechaHora-$numeroAleatorio";
-
-        if($this->pagadito->connect()) {
+            $total = 0;
             foreach ($carrito as $item) {
-                $this->pagadito->add_detail($item['cantidad'], $item['nombre'], $item['precio_unidad']);
+                $total += $item['precio_unidad'] * $item['cantidad'];
             }
 
-            if (!$this->pagadito->exec_trans($ern)) {
+            session()->put('carrito_old', $carrito);
+
+            $fechaHora = date('YmdHis');
+            $numeroAleatorio = rand(100, 999);
+            $ern = "ARCA_ACCESS-$fechaHora-$numeroAleatorio";
+
+            $factura = Factura::create([
+                'nombre' => $ern,
+                'usuario' => Auth::user()->id,
+                'direccion' => 'Direccion',
+                'total' => $total,
+            ]);
+
+            if($this->pagadito->connect()) {
+                foreach ($carrito as $item) {
+                    DetalleFactura::create([
+                        'factura' => $factura->id,
+                        'producto' => $item['producto_id'],
+                        'cantidad' => $item['cantidad'],
+                    ]);
+                    $this->pagadito->add_detail($item['cantidad'], $item['nombre'], $item['precio_unidad']);
+                }
+
+                if (!$this->pagadito->exec_trans($ern)) {
+                    return "ERROR:" . $this->pagadito->get_rs_code() . ": " . $this->pagadito->get_rs_message();
+                }
+            } else {
                 return "ERROR:" . $this->pagadito->get_rs_code() . ": " . $this->pagadito->get_rs_message();
             }
         } else {
-            return "ERROR:" . $this->pagadito->get_rs_code() . ": " . $this->pagadito->get_rs_message();
+            return view('auth.login');
+        }
+    }
+
+    public function verificar(Request $request, $token, $ern)
+    {
+        if ($this->pagadito->connect()) {
+            if ($this->pagadito->get_status($token)) {
+                $estado = $this->pagadito->get_rs_status();
+                if ($estado == "COMPLETED") {
+                    $factura = Factura::where('nombre', $ern)->first();
+                    $detalles = DetalleFactura::where('factura', $factura->id)->get();
+
+                    session()->forget('carrito');
+
+                    return view('pago', ['estado' => $estado, 'factura' => $factura, 'detalles' => $detalles]);
+                } elseif ($estado == "VERIFYING") {
+                    return view('pago', ['estado' => $estado]);
+                } elseif ($estado == "REVOKED") {
+                    return view('pago', ['estado' => $estado]);
+                } elseif ($estado == "FAILED") {
+                    return view('pago', ['estado' => $estado]);
+                } elseif ($estado == "CANCELED") {
+                    return view('pago', ['estado' => $estado]);
+                } elseif ($estado == "EXPIRED") {
+                    return view('pago', ['estado' => $estado]);
+                } else {
+                    return view('pago', ['error' => 'Estado no válido']);
+                }
+            } else {
+                return view('pago', ['error' => $this->pagadito->get_rs_code() . ': ' . $this->pagadito->get_rs_message()]);
+            }
+        } else {
+            return view('pago', ['error' => $this->pagadito->get_rs_code() . ': ' . $this->pagadito->get_rs_message()]);
         }
     }
 

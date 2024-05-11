@@ -43,4 +43,9 @@ class User extends Authenticatable
     protected $casts = [
         'password' => 'hashed',
     ];
+
+    public function facturas()
+    {
+        return $this->hasMany(Factura::class, 'usuario', 'id');
+    }
 }

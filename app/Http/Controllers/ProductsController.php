@@ -17,6 +17,8 @@ class ProductsController extends Controller
         if (Auth::check() && Auth::user()->admin == 1) {
             return view('adminproductos', compact('products'));
         }
+
+        return redirect('index');
     }
 
     /**

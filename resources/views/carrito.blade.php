@@ -162,7 +162,7 @@
                 let cantidadElement = document.querySelector(`.carrito-productos [data-product-id="${productId}"] .cantidad`);
                 let subTotal = document.querySelector(`.carrito-productos [data-product-id="${productId}"] > .carrito-producto-subtotal > p`);
                 cantidadElement.textContent = data.cantidad;
-                subTotal.textContent = precio * data.cantidad;
+                subTotal.textContent = '$' + (precio * data.cantidad);
                 document.querySelector('#total').textContent = '$' + getTotalPrecio();
                 document.querySelectorAll('.btn-cantidad').forEach((btn) => {
                     btn.disabled = false;
@@ -201,7 +201,7 @@
                 let cantidadElement = document.querySelector(`.carrito-productos [data-product-id="${productId}"] .cantidad`);
                 let subTotal = document.querySelector(`.carrito-productos [data-product-id="${productId}"] > .carrito-producto-subtotal > p`);
                 cantidadElement.textContent = data.cantidad;
-                subTotal.textContent = precio * data.cantidad;
+                subTotal.textContent = '$' + (precio * data.cantidad);
                 document.querySelector('#total').textContent = '$' + getTotalPrecio();
                 document.querySelectorAll('.btn-cantidad').forEach((btn) => {
                     btn.disabled = false;
