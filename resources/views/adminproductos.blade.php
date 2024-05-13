@@ -102,10 +102,20 @@
 </head>
 
 <body>
+    <div style="width: 100%; text-align: center;">
+
+    <h1 class="text-2xl font-semibold m-auto mb-4">Listado de Productos</h1>
+    </div>
 
     <div class="contenedor-modal">
-        <div class="">
-            <a href="{{ route('pedidos') }}" class="btn-primary btn">Ver pedidos</a>
+        <div style="display: flex; flex-direction: column; justify-content: flex-start;">
+            <div class="m-4">
+                <a href="{{ route('pedidos') }}" class="btn-primary btn">Ver pedidos</a>
+            </div>
+            
+            <div class="m-4">
+                <a href="{{ route('home') }}" class="btn-primary btn">Ver tienda</a>
+            </div>
         </div>
         <div class="content-modal">
             <div class="card">
