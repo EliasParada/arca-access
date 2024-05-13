@@ -171,10 +171,16 @@
             <div style="background-color: rgba(0, 0, 0, 0.6); color: #ffffff;" class="modal-content">
                 <div class="modal-header" style="justify-content: flex-start;">
                     <a class="navbar-brand p-0" href="#">
-                    <img src="img/logo2.png" style="height: 70px; border: 2px solid #fff; border-radius: 50%;">
+                    @if (Auth::check())
+                        <img src="{{ asset('image/' . Auth::user()->foto. '') }}" style="height: 70px; border: 2px solid #fff; border-radius: 50%;">
+                    @endif
                     </a>
                     <a style="text-decoration: none; color: white; float: rith; display: block; padding-top: 9px;" href="#">
-                    <h5> Juan Carlos</h5>
+                    <h5>
+                    @if (Auth::check())
+                        {{Auth::user()->name}}
+                    @endif
+                    </h5>
 
                     </a>
                 </div>
