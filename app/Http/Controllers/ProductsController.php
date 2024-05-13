@@ -11,9 +11,13 @@ class ProductsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Products::all();
+        if ($request->has('search')) {
+            $products = Products::where('nombre', 'LIKE', '%' . $request->search . '%')->get();
+        } else {
+            $products = Products::all();
+        }
         if (Auth::check() && Auth::user()->admin == 1) {
             return view('adminproductos', compact('products'));
         }

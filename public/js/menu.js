@@ -22,6 +22,7 @@ function cargarProductos(productosElegidos, categoria = null) {
 
 const botonesCategorias = document.querySelectorAll(".boton-categoria");
 const productos = document.querySelectorAll(".producto-card");
+const titulo = document.getElementById('titulo-principal');
 
 // Asigna un identificador a cada botón de categoría basado en su ID de categoría
 botonesCategorias.forEach(boton => {
@@ -31,8 +32,10 @@ botonesCategorias.forEach(boton => {
         e.currentTarget.classList.add("active");
         if (categoriaSeleccionada !== "todos") {
             cargarProductos(productos, categoriaSeleccionada);
+            titulo.innerText = categoriaSeleccionada;
         } else {
             cargarProductos(productos);
+            titulo.innerText = "Todos los productos";
         }
     });
 });

@@ -31,8 +31,8 @@
             <button class="close-menu" id="close-menu">
                 <i class="bi bi-x"></i>
             </button>
-            <div style="display: flex; justify-content: space-between; box-sizing: border-box; padding: 1rem;">
-                <img src="/img/logo.jpeg" alt="" style="border-radius: 100%; width: 4rem; height: 4rem;" class="logoo">
+            <div style="display: flex; justify-content: space-between; box-sizing: border-box; padding: 1rem; align-items: center;">
+                <img src="/img/logo.jpeg" alt="" style="border-radius: 100%; width: 6rem; height: 6rem;" class="logoo">
 
                 <div class="icono-perfil">
                     @if (Auth::check())
@@ -94,8 +94,8 @@
             </footer>
         </aside>
         <main>
-            <form class="d-flex" role="search" id="searchForm">
-                <input class="form-control me-2" type="search" placeholder="Buscar producto" aria-label="Search" id="searchInput">
+            <form class="d-flex" role="search" id="searchForm" action="{{ route('home') }}" method="get">
+                <input class="form-control me-2" type="search" name="search" placeholder="Buscar producto" aria-label="Search" id="searchInput">
                 <button class="btn btn-outline-success" type="submit"><em class="fa-solid fa-magnifying-glass"></em> buscar</button>
                 <br>
             </form>
@@ -123,7 +123,7 @@
     <div class="container-fluid">
     <div class="row p-5 pb-2 bg-dark text-white">
         <div class="col-xs-12 col-md-6 col-lg-3">
-        <img alt="logo" src="img/logo2.png" style="height: 100px;">
+        <img alt="logo" src="/img/logo.jpeg" style="height: 100px; border-radius: 100%;">
 
         </div>
         <div class="col-xs-12 col-md-6 col-lg-3">

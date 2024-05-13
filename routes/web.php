@@ -21,6 +21,8 @@ Route::post('login', [App\Http\Controllers\LoginController::class, 'login'])->na
 Route::post('register', [App\Http\Controllers\RegisterController::class, 'register'])->name('register.new');
 Route::post('logout', [App\Http\Controllers\LogoutContoller::class, 'logout'])->name('logout');
 
+Route::get('pedidos', [App\Http\Controllers\FacturaController::class, 'index'])->name('pedidos');
+
 Route::get('productos', [App\Http\Controllers\ProductsController::class, 'index'])->name('productos');
 Route::post('productos', [App\Http\Controllers\ProductsController::class, 'store'])->name('productos.store');
 Route::post('productos/{producto_id}', [App\Http\Controllers\ProductsController::class, 'update'])->name('productos.update');
