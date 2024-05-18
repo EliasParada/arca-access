@@ -52,6 +52,9 @@
             <nav>
                 <ul class="menu">
                     <li>
+                        <a href="/inicio" id="inicio" class="boton-menu boton-categoria"><i class="bi bi-hand-index-thumb-fill"></i> Inicio</a>
+                    </li>
+                    <li>
                         <button id="todos" class="boton-menu boton-categoria active"><i class="bi bi-hand-index-thumb-fill"></i> Todos los productos</button>
                     </li>
                     <li>
