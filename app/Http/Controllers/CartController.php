@@ -107,7 +107,15 @@ class CartController extends Pagadito
         return redirect()->back()->with('success', 'El carrito se ha vaciado correctamente');
     }
 
-    public function cobrar()
+    public function metodo()
+    {
+        if (Auth::check()) {
+            $carrito = session()->get('carrito', []);
+
+            return view('metodo');
+        }
+    }
+    public function cobrar(Request $request)
     {
         if (Auth::check()) {
             $carrito = session()->get('carrito', []);
@@ -126,31 +134,53 @@ class CartController extends Pagadito
             $factura = Factura::create([
                 'nombre' => $ern,
                 'usuario' => Auth::user()->id,
-                'direccion' => 'Direccion',
+                'direccion' => $request->direccion,
+                'metodo' => $request->metodo_pago,
                 'total' => $total,
             ]);
 
-            if($this->pagadito->connect()) {
-                foreach ($carrito as $item) {
-                    DetalleFactura::create([
-                        'factura' => $factura->id,
-                        'producto' => $item['producto_id'],
-                        'cantidad' => $item['cantidad'],
-                    ]);
-                    $this->pagadito->add_detail($item['cantidad'], $item['nombre'], $item['precio_unidad']);
-                }
+            if ($request->metodo_pago == "pagadito") {
+                if($this->pagadito->connect()) {
+                    foreach ($carrito as $item) {
+                        DetalleFactura::create([
+                            'factura' => $factura->id,
+                            'producto' => $item['producto_id'],
+                            'cantidad' => $item['cantidad'],
+                        ]);
+                        $this->pagadito->add_detail($item['cantidad'], $item['nombre'], $item['precio_unidad']);
+                    }
 
-                if (!$this->pagadito->exec_trans($ern)) {
+                    if (!$this->pagadito->exec_trans($ern)) {
+                        return "ERROR:" . $this->pagadito->get_rs_code() . ": " . $this->pagadito->get_rs_message();
+                    }
+                } else {
                     return "ERROR:" . $this->pagadito->get_rs_code() . ": " . $this->pagadito->get_rs_message();
                 }
-            } else {
-                return "ERROR:" . $this->pagadito->get_rs_code() . ": " . $this->pagadito->get_rs_message();
             }
+
+            foreach ($carrito as $item) {
+                DetalleFactura::create([
+                    'factura' => $factura->id,
+                    'producto' => $item['producto_id'],
+                    'cantidad' => $item['cantidad'],
+                ]);
+            }
+
+            return redirect()->route('pedido', $ern);
         } else {
             return view('auth.login');
         }
     }
 
+    public function pedido(Request $request, $ern)
+    {
+        $factura = Factura::where('nombre', $ern)->first();
+        $detalles = DetalleFactura::where('factura', $factura->id)->get();
+
+        session()->forget('carrito');
+
+        return view('pago', ['estado' => $factura->metodo, 'factura' => $factura, 'detalles' => $detalles]);
+    }
     public function verificar(Request $request, $token, $ern)
     {
         if ($this->pagadito->connect()) {

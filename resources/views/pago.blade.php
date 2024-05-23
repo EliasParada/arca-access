@@ -52,6 +52,10 @@
                         ¡El pago se ha completado correctamente!
                         <p id="carrito-comprado" class="carrito-comprado">Muchas gracias por tu compra. <i class="bi bi-emoji-laughing"></i></p>
                     </div>
+                @elseif ($estado === 'contraentrega')
+                    <div class="alert alert-info" role="alert">
+                        El pedido ha sido registrado.
+                    </div>
                 @elseif ($estado === 'VERIFYING')
                     <div class="alert alert-info" role="alert">
                         El pago está siendo verificado. Por favor, espere.

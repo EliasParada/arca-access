@@ -15,6 +15,7 @@ class Factura extends Model
         'nombre',
         'usuario',
         'direccion',
+        'metodo',
         'total',
     ];
 
