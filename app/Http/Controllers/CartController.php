@@ -113,6 +113,8 @@ class CartController extends Pagadito
             $carrito = session()->get('carrito', []);
 
             return view('metodo');
+        } else {
+            return view('auth.login');
         }
     }
     public function cobrar(Request $request)
