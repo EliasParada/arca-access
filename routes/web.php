@@ -35,7 +35,7 @@ Route::post('carrito/vaciar', [App\Http\Controllers\CartController::class, 'dest
 Route::post('carrito/{producto_id}', [App\Http\Controllers\CartController::class, 'update'])->name('carrito.eliminar');
 Route::post('carrito/{producto_id}/incrementar', [App\Http\Controllers\CartController::class, 'incrementarCantidad'])->name('carrito.incrementar');
 Route::post('carrito/{producto_id}/decrementar', [App\Http\Controllers\CartController::class, 'decrementarCantidad'])->name('carrito.decrementar');
-Route::post('metodo', [App\Http\Controllers\CartController::class, 'metodo'])->name('metodo');
+Route::get('metodo', [App\Http\Controllers\CartController::class, 'metodo'])->name('metodo');
 Route::post('cobrar', [App\Http\Controllers\CartController::class, 'cobrar'])->name('cobrar');
 Route::get('pago/factura/{ern}', [App\Http\Controllers\CartController::class, 'pedido'])->name('pedido');
 Route::get('pago/{token}/factura/{ern}', [App\Http\Controllers\CartController::class, 'verificar'])->name('pago');
