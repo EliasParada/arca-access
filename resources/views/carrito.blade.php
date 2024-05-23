@@ -109,7 +109,7 @@
                                 @endif
                             <p id="total">${{ $total }}</p>
                         </div>
-                        <form action="{{ route('metodo') }}" method="post">
+                        <form action="{{ route('metodo') }}" method="get">
                             @csrf
                             <button class="carrito-acciones-comprar">Comprar ahora</button>
                         </form>
